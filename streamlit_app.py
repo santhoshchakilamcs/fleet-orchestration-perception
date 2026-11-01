@@ -16,9 +16,19 @@ with tab1:
              "greedily to the nearest rider, and idle vehicles stage toward hotspots.")
     n_v = st.slider("Vehicles", 5, 50, 20)
     n_r = st.slider("Riders", 20, 300, 100)
+    surge = st.slider("Demand surge multiplier (synthetic event-day scenario)", 1.0, 2.5, 1.0, step=0.5)
     if st.button("Run fleet simulation"):
         r = simulate(n_vehicles=n_v, n_riders=n_r)
+        st.subheader("Baseline")
         st.write(r)
+        if surge != 1.0:
+            surge_riders = int(n_r * surge)
+            rs = simulate(n_vehicles=n_v, n_riders=surge_riders)
+            st.subheader(f"Surge scenario: {surge}x demand, {surge_riders} riders (synthetic)")
+            st.write(rs)
+            st.write("Compare completion rate, average wait, and unserved riders "
+                     "between baseline and surge. A surge is a scenario test, "
+                     "not a forecast of real demand.")
 
 with tab2:
     st.header("Perception verification and validation")
